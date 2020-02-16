@@ -1,36 +1,98 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input,ViewChild  } from '@angular/core';
 import * as $ from 'jquery';
+import { Calendar } from '@fullcalendar/core';
+import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import 'fullcalendar';
-import * as moment from 'moment';@Component({
+import * as moment from 'moment';
+   
+$(function() {
+
+   $('#calendar').fullCalendar({
+     defaultView: 'month',
+ 
+     header: {
+       center: 'addEventButton'
+     },
+ 
+     customButtons: {
+       addEventButton: {
+         text: 'add event...',
+         click: function() {
+           var dateStr = prompt('Enter a date in YYYY-MM-DD format');
+           var titre=prompt('Enter Title...')
+           var date = moment(dateStr);
+ 
+           if (date.isValid()) {
+             $('#calendar').fullCalendar('renderEvent', {
+               title: titre,
+               start: date,
+               allDay: true
+             });
+            
+           } else {
+             alert('Invalid date.');
+           }
+         }
+       }
+     }
+   });
+ 
+ });
+document.addEventListener('DOMContentLoaded', function() {
+   
+   let draggableEl = document.getElementById('mydraggable');
+   let calendarEl = document.getElementById('mycalendar');
+ 
+   let calendar = new Calendar(calendarEl, {
+     plugins: [ interactionPlugin ],
+     droppable: true
+   });
+   calendar.render();
+ 
+   new Draggable(draggableEl);
+ });
+  
+
+@Component({
    selector: 'app-full-calendar',
    templateUrl: './full-calendar.component.html',
    styleUrls: ['./full-calendar.component.css']
 })
+
+
+
 export class FullCalendarComponent implements OnInit {
+  
+   
   @Input()
       set configurations(config: any) {
          if(config)
           {
             this.defaultConfigurations = config;  
          }
-      }@Input() eventData: any;
+      }
+      @Input() eventData: any;
    
    defaultConfigurations: any;
    constructor() {
     this.eventData = [
+      
+    
       {
-         title: 'deadlinefreeways',
-         start: moment()
+        title:' Smart Cyber Security',
+        start:"2020-02-22T09:30:00.000Z",
+        end: "2020-02-22T15:00:10.370Z",
+       
       },
       {
-         title: 'AG securinets ',
-         start: moment().add(1, 'days'),
-         end: moment().add(1, 'days')
+         title:' Réunion Hmadi',
+        start:"2020-02-17T13:00:00.000Z",
+        end: "2020-02-17T13:30:10.370Z",
       },
       {
-        title:' GG ISI',
-        start:moment().add(3, 'days'),
-        end: moment().add(3, 'days'),
+         title:' Réunion DeepFake Detection',
+        start:"2020-02-18T13:00:00.000Z",
+        end: "2020-02-18T13:30:10.370Z",
       }
     ];
      this.defaultConfigurations = {editable: true,
@@ -88,5 +150,5 @@ export class FullCalendarComponent implements OnInit {
     $('#full-calendar').fullCalendar(
       this.defaultConfigurations
    );
-    }
-  }
+   }
+}
